@@ -4,7 +4,7 @@ import 'package:barter_it/screens/loginscreen.dart';
 import 'package:barter_it/screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import 'model/user.dart';
 import 'myconfig.dart';
 
@@ -75,13 +75,12 @@ class SplashScreenState extends State<SplashScreen> {
       }).timeout(const Duration(seconds: 5));
     } else {
       user = User(
-          id: "na",
-          name: "na",
-          email: "na",
-          phone: "na",
-          datereg: "na",
-          password: "na",
-          otp: "na");
+        id: "na",
+        name: "na",
+        email: "na",
+        datereg: "na",
+        password: "na",
+      );
       Timer(
           const Duration(seconds: 3),
           () => Navigator.pushReplacement(context,
