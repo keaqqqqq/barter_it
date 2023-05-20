@@ -1,9 +1,13 @@
+import 'package:barter_it/model/user.dart';
 import 'package:flutter/material.dart';
+import 'package:barter_it/model/user.dart';
+import '../../model/user.dart';
 
 //for buyer screen
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final User user;
+  const MainScreen({super.key, required this.user});
 
   @override
   State<MainScreen> createState() => _MainScreenState();

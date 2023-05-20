@@ -6,6 +6,8 @@ import 'mainscreen.dart';
 import 'registrationscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:barter_it/model/user.dart';
+import '../model/user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -202,8 +204,12 @@ class _LoginScreenState extends State<LoginScreen> {
         if (jsondata['status'] == 'success') {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text("Login Success")));
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (content) => const MainScreen()));
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (content) => MainScreen(
+                        user: user,
+                      )));
         } else {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text("Login Failed")));
