@@ -199,6 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
           "email": email,
           "password": pass,
         }).then((response) {
+      print(response.body);
       if (response.statusCode == 200) {
         var jsondata = jsonDecode(response.body);
         if (jsondata['status'] == 'success') {
