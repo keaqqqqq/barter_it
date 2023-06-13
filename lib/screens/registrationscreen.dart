@@ -299,7 +299,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           "password": passa,
         }).then((response) {
       print(response.body);
-      print('registered successfully');
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(

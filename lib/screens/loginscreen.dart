@@ -193,7 +193,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     String email = _emailEditingController.text;
     String pass = _passEditingController.text;
-    print(pass);
     http.post(Uri.parse("${Config.server}/barter_it/php/login_user.php"),
         body: {
           "email": email,
@@ -204,8 +203,6 @@ class _LoginScreenState extends State<LoginScreen> {
         var jsondata = jsonDecode(response.body);
         if (jsondata['status'] == 'success') {
           User user = User.fromJson(jsondata['data']);
-          print(user.name);
-          print(user.email);
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text("Login Success")));
           Navigator.pushReplacement(
