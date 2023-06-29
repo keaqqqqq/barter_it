@@ -174,7 +174,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                       Expanded(
                         child: GridView.count(
                           crossAxisCount: axiscount,
-                          childAspectRatio: 0.7,
+                          childAspectRatio: 0.8,
                           children: List.generate(
                             itemList.length,
                             (index) {
@@ -193,10 +193,10 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                                         ClipRRect(
                                           child: CachedNetworkImage(
                                             width: screenWidth,
-                                            height: 200,
+                                            height: 150,
                                             fit: BoxFit.cover,
                                             imageUrl:
-                                                "${Config.server}/barter_it/assets/items/${itemList[index].itemId}_1.png",
+                                                "${Config.server}/barter_it/assets/photo/${itemList[index].itemId}_1.jpg",
                                             placeholder: (context, url) =>
                                                 const LinearProgressIndicator(),
                                             errorWidget:
@@ -228,9 +228,6 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                                                   const TextStyle(fontSize: 12),
                                             ),
                                           ],
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
                                         ),
                                       ],
                                     ),
