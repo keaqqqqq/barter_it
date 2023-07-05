@@ -320,7 +320,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
             title: const Text(
-              'Insert your catch?',
+              'Insert your item?',
               style: TextStyle(),
             ),
             content: const Text(
@@ -331,7 +331,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
               TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    insertCatch();
+                    insertItem();
                   },
                   child: const Text(
                     'Yes',
@@ -351,7 +351,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
         });
   }
 
-  void insertCatch() {
+  void insertItem() {
     String itemname = _itemnameEditingController.text;
     String itemdesc = _itemdescEditingController.text;
     String itemprice = _itempriceEditingController.text;
@@ -359,7 +359,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
     String state = _prstateEditingController.text;
     String locality = _prlocalEditingController.text;
 
-    http.post(Uri.parse("${Config.server}/barter_it/php/insert_info.php"),
+    http.post(Uri.parse("${ServerConfig.SERVER}/barter_it/php/insert_info.php"),
         body: {
           "userid": widget.user.id.toString(),
           "itemname": itemname,

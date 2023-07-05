@@ -48,7 +48,8 @@ class SplashScreenState extends State<SplashScreen> {
     bool ischeck = (prefs.getBool('checkbox')) ?? false;
     late User user;
     if (ischeck) {
-      http.post(Uri.parse("${Config.server}/barter_it/php/login_user.php"),
+      http.post(
+          Uri.parse("${ServerConfig.SERVER}/barter_it/php/login_user.php"),
           body: {"email": email, "password": password}).then((response) {
         if (response.statusCode == 200) {
           var jsondata = jsonDecode(response.body);

@@ -21,6 +21,21 @@ class BuyerTabScreen extends StatefulWidget {
 class _BuyerTabScreenState extends State<BuyerTabScreen> {
   String maintitle = "Buyer";
   List<Item> itemList = <Item>[];
+  List<Item> displaylist = [];
+
+  void searchList(String value) {
+    setState(() {
+      displaylist = itemList
+          .where((element) =>
+              element.itemName!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void initializeDisplayList() {
+    displaylist = List<Item>.from(itemList);
+  }
+
   late double screenHeight, screenWidth;
   late int axiscount = 2;
   int numofpage = 1, curpage = 1;
@@ -53,20 +68,13 @@ class _BuyerTabScreenState extends State<BuyerTabScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(maintitle),
+        backgroundColor: Colors.white,
+        title: Text(
+          'Daily Discover',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+        ),
         actions: [
-          IconButton(
-              onPressed: () {
-                showsearchDialog();
-              },
-              icon: const Icon(Icons.search)),
-          TextButton.icon(
-            icon: const Icon(
-              Icons.shopping_cart,
-            ), // Your icon here
-            label: const Text(''), // Your text here
-            onPressed: () {},
-          )
+          IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_cart))
         ],
       ),
       body: itemList.isEmpty
@@ -74,65 +82,104 @@ class _BuyerTabScreenState extends State<BuyerTabScreen> {
               child: Text("No Data"),
             )
           : Column(children: [
+              const SizedBox(
+                height: 10.0,
+              ),
               Container(
-                height: 24,
-                color: Theme.of(context).colorScheme.primary,
-                alignment: Alignment.center,
-                child: Text(
-                  "${itemList.length} Catches Found",
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextFormField(
+                  onChanged: (value) => searchItem(value),
+                  style: const TextStyle(color: Colors.orange, fontSize: 15),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xFFFFFFFF),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: const BorderSide(color: Colors.orange),
+                    ),
+                    hintText: "Wireless Keyboard...",
+                    hintStyle: const TextStyle(color: Colors.orange),
+                    prefixIcon: const Icon(Icons.search),
+                  ),
                 ),
+              ),
+              const SizedBox(
+                height: 10.0,
               ),
               Expanded(
                   child: GridView.count(
                       crossAxisCount: axiscount,
+                      childAspectRatio: 0.8,
                       children: List.generate(
                         itemList.length,
                         (index) {
-                          return Card(
-                            child: InkWell(
-                              onTap: () async {
-                                Item useritem =
-                                    Item.fromJson(itemList[index].toJson());
-                                await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (content) => BuyerDetailScreen(
-                                              user: widget.user,
-                                              useritem: useritem,
-                                            )));
-                                loadItems(1);
-                              },
-                              child: Column(children: [
-                                CachedNetworkImage(
-                                  width: screenWidth,
-                                  fit: BoxFit.cover,
-                                  imageUrl:
-                                      "${Config.server}/barter_it/assets/photo/${itemList[index].itemId}_1.jpg",
-                                  placeholder: (context, url) =>
-                                      const LinearProgressIndicator(),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+                          return Padding(
+                              padding: const EdgeInsets.all(0),
+                              child: Card(
+                                elevation: 5,
+                                child: InkWell(
+                                  onTap: () async {
+                                    Item useritem =
+                                        Item.fromJson(itemList[index].toJson());
+                                    await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (content) =>
+                                                BuyerDetailScreen(
+                                                  useritem: useritem,
+                                                )));
+                                    loadItems(1);
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        child: CachedNetworkImage(
+                                          width: screenWidth,
+                                          height: 150,
+                                          fit: BoxFit.cover,
+                                          imageUrl:
+                                              "${ServerConfig.SERVER}/barter_it/assets/photo/${itemList[index].itemId}_1.jpg",
+                                          placeholder: (context, url) =>
+                                              const LinearProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        ),
+                                      ),
+                                      Text(
+                                        itemList[index].itemName.toString(),
+                                        style: const TextStyle(fontSize: 20),
+                                        textAlign: TextAlign.start,
+                                      ),
+                                      const SizedBox(
+                                        height: 31,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "RM${double.parse(itemList[index].itemPrice.toString()).toStringAsFixed(2)}",
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.red),
+                                          ),
+                                          Text(
+                                            "${itemList[index].itemQty} available",
+                                            style:
+                                                const TextStyle(fontSize: 12),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                  itemList[index].itemName.toString(),
-                                  style: const TextStyle(fontSize: 20),
-                                ),
-                                Text(
-                                  "RM ${double.parse(itemList[index].itemPrice.toString()).toStringAsFixed(2)}",
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                                Text(
-                                  "${itemList[index].itemQty} available",
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                              ]),
-                            ),
-                          );
+                              ));
                         },
                       ))),
               SizedBox(
-                height: 50,
+                height: 35,
                 child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: numofpage,
@@ -160,7 +207,7 @@ class _BuyerTabScreenState extends State<BuyerTabScreen> {
   }
 
   void loadItems(int pg) {
-    http.post(Uri.parse("${Config.server}/barter_it/php/load_items.php"),
+    http.post(Uri.parse("${ServerConfig.SERVER}/barter_it/php/load_items.php"),
         body: {"pageno": pg.toString()}).then((response) {
       //print(response.body);
       log(response.body);
@@ -169,6 +216,7 @@ class _BuyerTabScreenState extends State<BuyerTabScreen> {
         var jsondata = jsonDecode(response.body);
         if (jsondata['status'] == "success") {
           numofpage = int.parse(jsondata['numofpage']);
+          print("$numofpage page");
           numberofresult = int.parse(jsondata['numberofresult']);
           print(numberofresult);
           var extractdata = jsondata['data'];
@@ -182,55 +230,8 @@ class _BuyerTabScreenState extends State<BuyerTabScreen> {
     });
   }
 
-  void showsearchDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          title: const Text(
-            "Search?",
-            style: TextStyle(),
-          ),
-          content: Column(mainAxisSize: MainAxisSize.min, children: [
-            TextField(
-                controller: searchController,
-                decoration: const InputDecoration(
-                    labelText: 'Search',
-                    labelStyle: TextStyle(),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 2.0),
-                    ))),
-            const SizedBox(
-              height: 4,
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  String search = searchController.text;
-                  searchCatch(search);
-                  Navigator.of(context).pop();
-                },
-                child: const Text("Search"))
-          ]),
-          actions: <Widget>[
-            TextButton(
-              child: const Text(
-                "Close",
-                style: TextStyle(),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void searchCatch(String search) {
-    http.post(Uri.parse("${Config.server}/barter_it/php/load_items.php"),
+  void searchItem(String search) {
+    http.post(Uri.parse("${ServerConfig.SERVER}/barter_it/php/load_items.php"),
         body: {"search": search}).then((response) {
       //print(response.body);
       log(response.body);

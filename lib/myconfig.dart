@@ -1,3 +1,4 @@
-class Config {
-  static const String server = "http://10.144.138.228";
+class ServerConfig {
+  // ignore: constant_identifier_names
+  static const String SERVER = "https://keaqqqqq.com";
 }

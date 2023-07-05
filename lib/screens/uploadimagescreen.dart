@@ -435,15 +435,16 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
           content: Text('Please take a picture for third view')));
       return;
     }
-    insertCatch();
+    insertItem();
   }
 
-  void insertCatch() {
+  void insertItem() {
     String base64Image = base64Encode(_image!.readAsBytesSync());
     String base64Image1 = base64Encode(_image1!.readAsBytesSync());
     String base64Image2 = base64Encode(_image2!.readAsBytesSync());
 
-    http.post(Uri.parse("${Config.server}/barter_it/php/insert_items.php"),
+    http.post(
+        Uri.parse("${ServerConfig.SERVER}/barter_it/php/insert_items.php"),
         body: {
           "userid": widget.user.id.toString(),
           "image": base64Image,

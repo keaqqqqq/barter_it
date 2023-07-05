@@ -52,7 +52,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
           backgroundColor: Colors.white,
           title: const Text(
             'Listings',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
           ),
           actions: [
             IconButton(
@@ -196,7 +196,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                                             height: 150,
                                             fit: BoxFit.cover,
                                             imageUrl:
-                                                "${Config.server}/barter_it/assets/photo/${itemList[index].itemId}_1.jpg",
+                                                "${ServerConfig.SERVER}/barter_it/assets/photo/${itemList[index].itemId}_1.jpg",
                                             placeholder: (context, url) =>
                                                 const LinearProgressIndicator(),
                                             errorWidget:
@@ -251,7 +251,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
       return;
     }
 
-    http.post(Uri.parse("${Config.server}/barter_it/php/load_items.php"),
+    http.post(Uri.parse("${ServerConfig.SERVER}/barter_it/php/load_items.php"),
         body: {"userid": widget.user.id}).then((response) {
       //print(response.body);
       log(response.body);
@@ -307,7 +307,8 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
   }
 
   void deleteitem(int index) {
-    http.post(Uri.parse("${Config.server}/barter_it/php/delete_items.php"),
+    http.post(
+        Uri.parse("${ServerConfig.SERVER}/barter_it/php/delete_items.php"),
         body: {
           "userid": widget.user.id,
           "itemid": itemList[index].itemId
