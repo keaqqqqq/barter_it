@@ -1,16 +1,24 @@
 import 'dart:convert';
-
+import 'package:barter_it/model/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../model/item.dart';
 import 'package:http/http.dart' as http;
-
 import '../myconfig.dart';
+import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
+
+import 'buyermorescreen.dart';
 
 class BuyerDetailScreen extends StatefulWidget {
   final Item useritem;
-  const BuyerDetailScreen({super.key, required this.useritem});
+  final User user;
+
+  const BuyerDetailScreen(
+      {super.key,
+      required this.useritem,
+      required this.user,
+      required int page});
 
   @override
   State<BuyerDetailScreen> createState() => _BuyerDetailScreenState();
@@ -39,24 +47,46 @@ class _BuyerDetailScreenState extends State<BuyerDetailScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize:
-            const Size.fromHeight(300), // Adjust the preferred height
+        preferredSize: const Size.fromHeight(230),
+        // Adjust the preferred height
         child: AppBar(
           centerTitle: true,
           flexibleSpace: SizedBox(
             width: screenWidth,
             height: screenHeight,
-            child: CachedNetworkImage(
-              width: screenWidth,
-              height: screenHeight, // Adjust the height of the image
-              fit: BoxFit
-                  .cover, // Adjust the fit property to maintain aspect ratio
-              imageUrl:
-                  "${ServerConfig.SERVER}/barter_it/assets/photo/${widget.useritem.itemId}_1.jpg",
-              placeholder: (context, url) => const LinearProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+            child: Align(
+              alignment: Alignment.center,
+              child: Swiper(
+                itemBuilder: (BuildContext context, int index) {
+                  return CachedNetworkImage(
+                    imageUrl:
+                        "${ServerConfig.SERVER}/barter_it/assets/photo/${widget.useritem.itemId}_${index + 1}.jpg",
+                    fit: BoxFit.cover,
+                  );
+                },
+                itemCount: 3, // Replace with the actual number of images
+                pagination: const SwiperPagination(),
+                control: const SwiperControl(),
+              ),
             ),
           ),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (content) => BuyerMoreScreen(
+                      user: widget.user,
+                      useritem: widget.useritem,
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.more_horiz_outlined),
+              tooltip: "More from this seller",
+            ),
+          ],
         ),
       ),
       body: Column(children: [
@@ -247,7 +277,9 @@ class _BuyerDetailScreenState extends State<BuyerDetailScreen> {
                       borderRadius: BorderRadius.circular(18.0),
                       side: const BorderSide(color: Colors.orange),
                     ))),
-                onPressed: () {},
+                onPressed: () {
+                  addtocartdialog();
+                },
                 child: Text(
                   "RM ${totalprice.toStringAsFixed(2)} Add to Cart",
                   style: const TextStyle(fontSize: 18, color: Colors.white),
@@ -256,5 +288,82 @@ class _BuyerDetailScreenState extends State<BuyerDetailScreen> {
         ),
       ),
     );
+  }
+
+  void addtocartdialog() {
+    if (widget.user.id.toString() == "na") {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please register to add item to cart")));
+      return;
+    }
+    if (widget.user.id.toString() == widget.useritem.userId.toString()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("User cannot add own item")));
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          title: const Text(
+            "Add to cart?",
+            style: TextStyle(),
+          ),
+          content: const Text("Are you sure?", style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                "Yes",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                addtocart();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "No",
+                style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void addtocart() {
+    http.post(Uri.parse("${ServerConfig.SERVER}/barter_it/php/addtocart.php"),
+        body: {
+          "item_id": widget.useritem.itemId.toString(),
+          "cart_qty": userqty.toString(),
+          "cart_price": totalprice.toString(),
+          "userid": widget.user.id,
+          "sellerid": widget.useritem.userId
+        }).then((response) {
+      // ignore: avoid_print
+      print(response.body);
+      if (response.statusCode == 200) {
+        var jsondata = jsonDecode(response.body);
+        if (jsondata['status'] == 'success') {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Success")));
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Failed")));
+        }
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Failed")));
+        Navigator.pop(context);
+      }
+    });
   }
 }

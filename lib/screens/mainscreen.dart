@@ -1,8 +1,10 @@
+import 'package:barter_it/screens/loginregistersplashscreen.dart';
+import 'package:barter_it/screens/profiletabscreen.dart';
 import 'package:flutter/material.dart';
 import '../../model/user.dart';
 import 'buyertabscreen.dart';
+import 'loginscreen.dart';
 import 'newstabscreen.dart';
-import 'profiletabscreen.dart';
 import 'sellertabscreen.dart';
 
 //for buyer screen
@@ -53,10 +55,11 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 label: "Buyer"),
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.store_mall_directory,
-                ),
-                label: "Seller"),
+              icon: Icon(
+                Icons.store_mall_directory,
+              ),
+              label: "Seller",
+            ),
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.person,
@@ -72,6 +75,15 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void onTabTapped(int value) {
+    if ((value == 1 || value == 2 || value == 3) && widget.user.id == "na") {
+      // Navigate to the login screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const LoginRegisterSplashScreen()),
+      );
+      return;
+    }
     setState(() {
       _currentIndex = value;
     });
