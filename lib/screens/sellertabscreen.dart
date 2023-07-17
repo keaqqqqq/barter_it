@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'package:barter_it/screens/sellerorderscreen.dart';
 import 'package:barter_it/screens/uploadimagescreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,9 @@ import 'package:http/http.dart' as http;
 import '../model/item.dart';
 import '../model/user.dart';
 import '../myconfig.dart';
+import 'edititemscreen.dart';
 import 'newitemsplashscreen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // for fisherman screen
 
@@ -47,12 +49,16 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
       axiscount = 2;
     }
     return Scaffold(
-        backgroundColor: Color.fromRGBO(237, 237, 237, 1),
+        backgroundColor: const Color.fromRGBO(237, 237, 237, 1),
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: const Text(
+          title: Text(
             'Listings',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            style: GoogleFonts.montserrat(
+                textStyle: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            )),
           ),
           actions: [
             IconButton(
@@ -77,6 +83,36 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
               },
               icon: const Icon(Icons.add, size: 30),
             ),
+            PopupMenuButton(
+                // add icon, by default "3 dot" icon
+                // icon: Icon(Icons.book)
+                itemBuilder: (context) {
+              return [
+                const PopupMenuItem<int>(
+                  value: 0,
+                  child: Text("My Order"),
+                ),
+                const PopupMenuItem<int>(
+                  value: 1,
+                  child: Text("New"),
+                ),
+              ];
+            }, onSelected: (value) async {
+              if (value == 0) {
+                if (widget.user.id.toString() == "na") {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Please login/register an account")));
+                  return;
+                }
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (content) => SellerOrderScreen(
+                              user: widget.user,
+                            )));
+              } else if (value == 1) {
+              } else if (value == 2) {}
+            }),
           ],
         ),
         body: itemList.isEmpty
@@ -84,40 +120,38 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                 onRefresh: refresh,
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        width: 380,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(11.0),
-                          image: const DecorationImage(
-                            image: AssetImage(
-                              'assets/images/background.jpg',
-                            ),
-                            fit: BoxFit.cover,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      width: 380,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(11.0),
+                        image: const DecorationImage(
+                          image: AssetImage(
+                            'assets/images/background.jpg',
                           ),
+                          fit: BoxFit.cover,
                         ),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              const Text(
-                                'Get a trade for your item',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                              ),
-                              const Text(
-                                ' with Barter-IT',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                              ),
-                            ],
-                          ),
+                      ),
+                      child: Center(
+                        child: Column(
+                          children: const [
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Text(
+                              'Get a trade for your item',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                            Text(
+                              ' with Barter-IT',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -126,46 +160,44 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
             : RefreshIndicator(
                 onRefresh: refresh,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 5),
                   child: Column(
                     children: [
-                      Container(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            width: 380,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(11.0),
-                              image: const DecorationImage(
-                                image: AssetImage(
-                                  'assets/images/background.jpg',
-                                ),
-                                fit: BoxFit.cover,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          width: 380,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(11.0),
+                            image: const DecorationImage(
+                              image: AssetImage(
+                                'assets/images/background.jpg',
                               ),
+                              fit: BoxFit.cover,
                             ),
-                            child: Center(
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  const Text(
-                                    'Get a trade for your item',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 18),
-                                  ),
-                                  const Text(
-                                    ' with Barter-IT',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            //padding: <-- Using to shift text position a little bit for your requirement
                           ),
+                          child: Center(
+                            child: Column(
+                              children: const [
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Text(
+                                  'Get a trade for your item',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                                Text(
+                                  ' with Barter-IT',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          ),
+                          //padding: <-- Using to shift text position a little bit for your requirement
                         ),
                       ),
                       const SizedBox(
@@ -185,6 +217,19 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                                   child: InkWell(
                                     onLongPress: () {
                                       onDeleteDialog(index);
+                                    },
+                                    onTap: () async {
+                                      Item singleitem = Item.fromJson(
+                                          itemList[index].toJson());
+                                      await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (content) =>
+                                                  EditItemScreen(
+                                                    user: widget.user,
+                                                    useritem: singleitem,
+                                                  )));
+                                      loadselleritems();
                                     },
                                     child: Column(
                                       crossAxisAlignment:
