@@ -13,6 +13,7 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _nameEditingController = TextEditingController();
+  final TextEditingController _phoneEditingController = TextEditingController();
   final TextEditingController _emailEditingController = TextEditingController();
   final TextEditingController _passEditingController = TextEditingController();
   final TextEditingController _pass2EditingController = TextEditingController();
@@ -88,6 +89,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     ),
                                     const SizedBox(
                                       height: 10,
+                                    ),
+                                    TextFormField(
+                                      controller: _phoneEditingController,
+                                      validator: (val) => val!.isEmpty ||
+                                              (val.length < 10)
+                                          ? "phone must be longer or equal to 10"
+                                          : null,
+                                      keyboardType: TextInputType.phone,
+                                      decoration: const InputDecoration(
+                                          labelText: 'Phone',
+                                          labelStyle: TextStyle(),
+                                          icon: Icon(Icons.phone),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(width: 2.0),
+                                          )),
                                     ),
                                     TextFormField(
                                       controller: _emailEditingController,
@@ -290,12 +306,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
     );
     String name = _nameEditingController.text;
+    String phone = _phoneEditingController.text;
     String email = _emailEditingController.text;
     String passa = _passEditingController.text;
     http.post(
         Uri.parse("${ServerConfig.SERVER}/barter_it/php/register_user.php"),
         body: {
           "name": name,
+          "phone": phone,
           "email": email,
           "password": passa,
         }).then((response) {

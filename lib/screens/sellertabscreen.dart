@@ -92,10 +92,6 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                   value: 0,
                   child: Text("My Order"),
                 ),
-                const PopupMenuItem<int>(
-                  value: 1,
-                  child: Text("New"),
-                ),
               ];
             }, onSelected: (value) async {
               if (value == 0) {
@@ -110,8 +106,7 @@ class _SellerTabScreenState extends State<SellerTabScreen> {
                         builder: (content) => SellerOrderScreen(
                               user: widget.user,
                             )));
-              } else if (value == 1) {
-              } else if (value == 2) {}
+              } 
             }),
           ],
         ),
