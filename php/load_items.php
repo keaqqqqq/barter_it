@@ -15,14 +15,38 @@ if(isset($_POST['pageno'])){
 }
 $page_first_result = ($pageno-1) * $results_per_page;
 
+if (isset($_POST['cartuserid'])){
+	$cartuserid = $_POST['cartuserid'];
+}else{
+	$cartuserid = '0';
+}
+
 if (isset($_POST['userid'])){
 	$userid = $_POST['userid'];	
 	$sqlloaditems = "SELECT * FROM `tbl_items` WHERE user_id = '$userid'";
+	$sqlcart = "SELECT * FROM `tbl_carts` WHERE user_id = '$userid'";
 }else if (isset($_POST['search'])){
 	$search = $_POST['search'];
 	$sqlloaditems = "SELECT * FROM `tbl_items` WHERE item_name LIKE '%$search%'";
+	$sqlcart = "SELECT * FROM `tbl_carts` WHERE user_id = '$cartuserid'";
 }else{
 	$sqlloaditems = "SELECT * FROM `tbl_items`";
+	$sqlcart = "SELECT * FROM `tbl_carts` WHERE user_id = '$cartuserid'";
+}
+
+if (isset($sqlcart)){
+	$resultcart = $conn->query($sqlcart);
+	$number_of_result_cart = $resultcart->num_rows;
+	if ($number_of_result_cart > 0) {
+		$totalcart = 0;
+		while ($rowcart = $resultcart->fetch_assoc()) {
+			$totalcart = $totalcart+ $rowcart['cart_qty'];
+		}
+	}else{
+		$totalcart = 0;
+	}
+}else{
+	$totalcart = 0;
 }
 
 $result = $conn->query($sqlloaditems);
@@ -48,7 +72,7 @@ if ($result->num_rows > 0) {
 		$itemlist['item_date'] = $row['item_date'];
         array_push($items["items"],$itemlist);
     }
-    $response = array('status' => 'success', 'data' => $items, 'numofpage'=>"$number_of_page",'numberofresult'=>"$number_of_result");
+    $response = array('status' => 'success', 'data' => $items, 'numofpage'=>"$number_of_page",'numberofresult'=>"$number_of_result", 'cartqty'=> $totalcart);
     sendJsonResponse($response);
 }else{
      $response = array('status' => 'failed', 'data' => null);
