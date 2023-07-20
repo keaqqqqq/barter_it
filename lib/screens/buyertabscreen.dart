@@ -324,15 +324,18 @@ class _BuyerTabScreenState extends State<BuyerTabScreen> {
                       } else {
                         color = Colors.green;
                       }
-                      return TextButton(
-                        onPressed: () {
+                 return GestureDetector(
+                        onTap: () {
                           curpage = index + 1;
                           loadItems();
                           print('index: $index');
                         },
-                        child: Text(
-                          (index + 1).toString(),
-                          style: TextStyle(color: color, fontSize: 18),
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0), 
+                          child: Text(
+                            (index + 1).toString(),
+                            style: TextStyle(color: color, fontSize: 18),
+                          ),
                         ),
                       );
                     },
