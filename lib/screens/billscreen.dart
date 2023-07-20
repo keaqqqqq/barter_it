@@ -34,7 +34,7 @@ class _BillScreenState extends State<BillScreen> {
         body: Center(
           child: WebView(
             initialUrl:
-                'https://keaqqqqq.com/barter_it/php/payment.php?sellerid=${widget.user.id}&userid=${widget.user.id}&email=${widget.user.email}&phone=${widget.user.phone}&name=${widget.user.name}&amount=${widget.totalprice}',
+                'https://keaqqqqq.com/barter_it/php/payment.php?userid=${widget.user.id}&email=${widget.user.email}&phone=${widget.user.phone}&name=${widget.user.name}&amount=${widget.totalprice}',
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (WebViewController webViewController) {
               _controller.complete(webViewController);
